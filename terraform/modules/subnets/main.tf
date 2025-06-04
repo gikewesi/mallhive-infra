@@ -1,5 +1,5 @@
-resource "aws_subnet" "mallhive_public_1a" {
-  vpc_id                  = aws_vpc.mallhive.id
+resource "aws_subnet" "public_1a" {
+  vpc_id                  = var.vpc_id
   cidr_block              = var.mallhive_public_1a_cidr_block
   availability_zone       = "us-east-1a"
   map_public_ip_on_launch = true
@@ -10,8 +10,8 @@ resource "aws_subnet" "mallhive_public_1a" {
   }
 }
 
-resource "aws_subnet" "mallhive_public_1b" {
-  vpc_id                  = aws_vpc.mallhive.id
+resource "aws_subnet" "public_1b" {
+  vpc_id                  = var.vpc_id
   cidr_block              = var.mallhive_public_1b_cidr_block
   availability_zone       = "us-east-1b"
   map_public_ip_on_launch = true
@@ -22,8 +22,8 @@ resource "aws_subnet" "mallhive_public_1b" {
   }
 }
 
-resource "aws_subnet" "mallhive_private_1a" {
-  vpc_id            = aws_vpc.mallhive.id
+resource "aws_subnet" "private_1a" {
+  vpc_id            = var.vpc_id
   cidr_block        = var.mallhive_private_1a_cidr_block
   availability_zone = "us-east-1a"
 
@@ -33,8 +33,8 @@ resource "aws_subnet" "mallhive_private_1a" {
   }
 }
 
-resource "aws_subnet" "mallhive_isolated_1a" {
-  vpc_id            = aws_vpc.mallhive.id
+resource "aws_subnet" "isolated_1a" {
+  vpc_id            = var.vpc_id
   cidr_block        = var.mallhive_isolated_1a_cidr_block
   availability_zone = "us-east-1a"
 
@@ -44,8 +44,8 @@ resource "aws_subnet" "mallhive_isolated_1a" {
   }
 }
 
-resource "aws_subnet" "mallhive_private_1b" {
-  vpc_id            = aws_vpc.mallhive.id
+resource "aws_subnet" "private_1b" {
+  vpc_id            = var.vpc_id
   cidr_block        = var.mallhive_private_1b_cidr_block
   availability_zone = "us-east-1b"
 
@@ -55,8 +55,8 @@ resource "aws_subnet" "mallhive_private_1b" {
   }
 }
 
-resource "aws_subnet" "mallhive_isolated_1b" {
-  vpc_id            = aws_vpc.mallhive.id
+resource "aws_subnet" "isolated_1b" {
+  vpc_id            = var.vpc_id
   cidr_block        = var.mallhive_isolated_1b_cidr_block
   availability_zone = "us-east-1b"
 

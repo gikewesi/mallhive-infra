@@ -1,23 +1,23 @@
-output "mallhive_public_1a" {
-  value = aws_subnet.mallhive_public_1a.id
+output "public_subnet_1a_id" {
+  value = aws_subnet.public_1a.id
 }
 
-output "mallhive_public_1b" {
-  value = aws_subnet.mallhive_public_1b.id
+output "public_subnet_1b_id" {
+  value = aws_subnet.public_1b.id
 }
 
-output "mallhive_private_1a" {
-  value = aws_subnet.mallhive_private_1a.id
+output "private_subnet_1a_id" {
+  value = aws_subnet.private_1a.id
 }
 
-output "mallhive_isolated_1a" {
-  value = aws_subnet.mallhive_isolated_1a.id
+output "isolated_subnet_1a_id" {
+  value = aws_subnet.isolated_1a.id
 }
 
-output "mallhive_private_1b" {
-  value = aws_subnet.mallhive_private_1b.id
+output "private_subnet_1b_id" {
+  value = aws_subnet.private_1b.id
 }
 
-output "mallhive_isolated_1b" {
-  value = aws_subnet.mallhive_isolated_1b.id
+output "isolated_subnet_1b_id" {
+  value = aws_subnet.isolated_1b.id
 }

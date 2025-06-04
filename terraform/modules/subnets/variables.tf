@@ -1,3 +1,8 @@
+variable "vpc_id" {
+  description = "VPC ID"
+  type        = string
+}
+
 variable "mallhive_public_1a_cidr_block" {
   description = "CIDR block for public subnet in AZ1"
   type        = string
