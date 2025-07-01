@@ -43,3 +43,12 @@ module "route_tables" {
   isolated_subnet_1a_id = module.subnets.isolated_subnet_1a_id
   isolated_subnet_1b_id = module.subnets.isolated_subnet_1b_id
 }
+
+module "rds" {
+  source = "./modules/rds"
+
+  db_subnet_group_name     = module.subnets.db_subnet_group_name
+  vpc_security_group_ids   = [aws_security_group.rds.id]
+  users_password           = var.users_password
+}
+
