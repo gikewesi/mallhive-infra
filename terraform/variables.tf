@@ -37,3 +37,9 @@ variable "vpc_cidr" {
   description = "CIDR block for the VPC"
   type        = string
 }
+
+variable "users_password" {
+  description = "Password for mallhive RDS instances"
+  type        = string
+  sensitive   = true
+}

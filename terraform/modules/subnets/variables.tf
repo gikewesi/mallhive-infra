@@ -32,3 +32,11 @@ variable "mallhive_isolated_1b_cidr_block" {
   description = "CIDR block for second private subnet in AZ2"
   type        = string
 }
+
+variable "isolated_subnet_1a_id" {
+  type = string
+}
+
+variable "isolated_subnet_1b_id" {
+  type = string
+}

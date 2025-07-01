@@ -28,6 +28,8 @@ module "subnets" {
   mallhive_private_1b_cidr_block  = var.mallhive_private_1b_cidr_block
   mallhive_isolated_1a_cidr_block = var.mallhive_isolated_1a_cidr_block
   mallhive_isolated_1b_cidr_block = var.mallhive_isolated_1b_cidr_block
+  isolated_subnet_1a_id           = module.subnets.isolated_subnet_1a_id
+  isolated_subnet_1b_id           = module.subnets.isolated_subnet_1b_id
 }
 
 module "route_tables" {

@@ -21,3 +21,7 @@ output "private_subnet_1b_id" {
 output "isolated_subnet_1b_id" {
   value = aws_subnet.isolated_1b.id
 }
+
+output "db_subnet_group_name" {
+  value = aws_db_subnet_group.db_subnet_group.name
+}
