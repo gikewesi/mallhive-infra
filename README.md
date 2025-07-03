@@ -1,6 +1,3 @@
-Here’s the full `README.md` content in markdown format, ready for you to copy directly into your repo:
-
-````markdown
 # MallHive Infrastructure
 
 This repository contains the infrastructure code and Kubernetes deployment configurations for the MallHive e-commerce platform. It handles provisioning of cloud resources, deployment setup, GitOps configurations, and CI/CD pipelines.
