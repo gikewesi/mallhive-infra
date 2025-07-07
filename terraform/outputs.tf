@@ -52,3 +52,5 @@ output "isolated_rt_1a_id" {
 output "isolated_rt_1b_id" {
   value = module.route_tables.isolated_rt_1b_id
 }
+
+

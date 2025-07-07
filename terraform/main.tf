@@ -51,4 +51,27 @@ module "rds" {
   vpc_security_group_ids   = [aws_security_group.rds.id]
   users_password           = var.users_password
 }
+module "dns" {
+  source = "./modules/route53"
+
+  cloudfront_domain_name        = module.cloudfront.cloudfront_domain_name           
+  cloudfront_zone_id            = module.cloudfront.cloudfront_zone_id       
+
+  backend_internal_alb_dns_name = module.backend_alb.dns_name
+  backend_internal_alb_zone_id  = module.backend_alb.zone_id
+}
+
+
+module "s3" {
+  source = "./modules/s3"
+}
+
+module "cloudfront" {
+  source                 = "./modules/cloudfront"
+  bucket_name            = "mallhive-s3"
+  bucket_arn             = module.s3.bucket_arn
+  bucket_domain_name     = module.s3.bucket_domain_name
+  acm_certificate_arn    = module.acm.certificate_arn
+  domain_name            = "www.mallhive.com"
+}
 
