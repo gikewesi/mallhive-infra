@@ -75,3 +75,19 @@ module "cloudfront" {
   domain_name            = "www.mallhive.com"
 }
 
+module "acm" {
+  source          = "./modules/acm"
+  domain_name     = "mallhive.com"
+  alt_names       = [] # optional
+  hosted_zone_id  = module.dns.public_zone_id
+}
+
+module "alb" {
+  source                = "./modules/alb"
+  vpc_id                = var.vpc_id
+  private_subnet_1a_id  = var.private_subnet_1a_id
+  private_subnet_1b_id  = var.private_subnet_1b_id
+  security_group_ids    = var.security_group_ids
+  private_zone_id       = var.private_zone_id
+  backend_record_fqdn   = var.backend_record_fqdn
+}
