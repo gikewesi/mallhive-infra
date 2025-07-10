@@ -21,7 +21,7 @@ module "vpc" {
 module "subnets" {
   source = "./modules/subnets"
 
-  vpc_id = module.vpc.vpc_id
+  vpc_id                          = module.vpc.vpc_id
   mallhive_public_1a_cidr_block   = var.mallhive_public_1a_cidr_block
   mallhive_public_1b_cidr_block   = var.mallhive_public_1b_cidr_block
   mallhive_private_1a_cidr_block  = var.mallhive_private_1a_cidr_block
@@ -35,7 +35,7 @@ module "subnets" {
 module "route_tables" {
   source = "./modules/route-tables"
 
-  vpc_id                      = module.vpc.vpc_id
+  vpc_id                = module.vpc.vpc_id
   public_subnet_1a_id   = module.subnets.public_subnet_1a_id
   public_subnet_1b_id   = module.subnets.public_subnet_1b_id
   private_subnet_1a_id  = module.subnets.private_subnet_1a_id
@@ -84,10 +84,23 @@ module "acm" {
 
 module "alb" {
   source                = "./modules/alb"
-  vpc_id                = var.vpc_id
-  private_subnet_1a_id  = var.private_subnet_1a_id
-  private_subnet_1b_id  = var.private_subnet_1b_id
+  vpc_id                = module.vpc.vpc_id
+  private_subnet_1a_id  = module.subnets.private_subnet_1a_id
+  private_subnet_1b_id  = module.subnets.private_subnet_1b_id
   security_group_ids    = var.security_group_ids
-  private_zone_id       = var.private_zone_id
-  backend_record_fqdn   = var.backend_record_fqdn
+  private_zone_id       = module.dns.private_zone_id
+  backend_record_fqdn   = module.dns.backend_record_fqdn
 }
+
+module "bastion" {
+  source = "./modules/bastion-host"
+
+  vpc_id              = module.vpc.vpc_id
+  public_subnet_1a_id = module.subnets.public_subnet_1a_id
+  public_subnet_1b_id = module.subnets.public_subnet_1b_id
+  ami_id              = var.ami_id
+  instance_type       = var.instance_type
+  key_name            = var.key_name
+  allowed_ssh_cidr_blocks = var.allowed_ssh_cidr_blocks
+}
+

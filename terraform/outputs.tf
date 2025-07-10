@@ -111,3 +111,29 @@ output "target_group_arn" {
 output "listener_arn" {
   value = module.alb.listener_arn
 }
+
+
+output "bastion_1a_instance_id" {
+  description = "ID of the bastion host instance in subnet 1a"
+  value       = module.bastion.bastion_1a_instance_id
+}
+
+output "bastion_1a_public_ip" {
+  description = "Public IP of the bastion host instance in subnet 1a"
+  value       = module.bastion.bastion_1a_public_ip
+}
+
+output "bastion_1b_instance_id" {
+  description = "ID of the bastion host instance in subnet 1b"
+  value       = module.bastion.bastion_1b_instance_id
+}
+
+output "bastion_1b_public_ip" {
+  description = "Public IP of the bastion host instance in subnet 1b"
+  value       = module.bastion.bastion_1b_public_ip
+}
+
+output "bastion_sg_id" {
+  description = "Security group ID attached to bastion hosts"
+  value       = module.bastion.bastion_sg_id
+}

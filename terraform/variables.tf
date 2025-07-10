@@ -73,3 +73,26 @@ variable "backend_record_fqdn" {
   description = "DNS record name (e.g. api.mallhive.internal)"
   type        = string
 }
+
+
+variable "ami_id" {
+  description = "AMI ID for the bastion host instance"
+  type        = string
+}
+
+variable "instance_type" {
+  description = "EC2 instance type for bastion hosts"
+  type        = string
+  default     = "t3.micro"
+}
+
+variable "key_name" {
+  description = "Name of the SSH key pair to access bastion hosts"
+  type        = string
+}
+
+variable "allowed_ssh_cidr_blocks" {
+  description = "List of CIDR blocks allowed to SSH into bastion hosts"
+  type        = list(string)
+  default     = ["0.0.0.0/0"]
+}
