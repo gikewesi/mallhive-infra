@@ -111,5 +111,3 @@ Feel free to submit a PR or open issues for bugs or suggestions. Infra evolves, 
 
 ```
 
-Let me know if you want to include badges (CI status, Terraform version, etc.) or add sections for security policies, Argo CD project naming conventions, or service-specific setup.
-```
