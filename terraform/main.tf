@@ -104,3 +104,14 @@ module "bastion" {
   allowed_ssh_cidr_blocks = var.allowed_ssh_cidr_blocks
 }
 
+module "eks" {
+  source = "./modules/eks"
+
+  private_subnet_1a_id = module.subnets.private_subnet_1a_id
+  private_subnet_1b_id = module.subnets.private_subnet_1b_id
+}
+
+module "ecr" {
+  source          = "./modules/ecr"
+  repository_name = var.repository_name
+}

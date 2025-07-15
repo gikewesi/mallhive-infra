@@ -96,3 +96,9 @@ variable "allowed_ssh_cidr_blocks" {
   type        = list(string)
   default     = ["0.0.0.0/0"]
 }
+
+variable "repository_name" {
+  type        = string
+  description = "Prefix name used for all ECR repositories"
+  default     = "mallhive"
+}

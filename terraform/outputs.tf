@@ -137,3 +137,59 @@ output "bastion_sg_id" {
   description = "Security group ID attached to bastion hosts"
   value       = module.bastion.bastion_sg_id
 }
+
+output "eks_cluster_name" {
+  value = module.eks.eks_cluster_name
+}
+
+output "eks_cluster_endpoint" {
+  value = module.eks.eks_cluster_endpoint
+}
+
+output "eks_cluster_certificate_authority_data" {
+  value = module.eks.eks_cluster_certificate_authority_data
+}
+
+output "eks_cluster_arn" {
+  value = module.eks.eks_cluster_arn
+}
+
+output "fargate_pod_execution_role_arn" {
+  value = module.eks.fargate_pod_execution_role_arn
+}
+
+output "kubeconfig_path" {
+  value = module.eks.kubeconfig_path
+}
+
+output "ecr_user_service_url" {
+  value = module.ecr.ecr_user_service_url
+}
+
+output "ecr_order_service_url" {
+  value = module.ecr.ecr_order_service_url
+}
+
+output "ecr_payment_service_url" {
+  value = module.ecr.ecr_payment_service_url
+}
+
+output "ecr_cart_service_url" {
+  value = module.ecr.ecr_cart_service_url
+}
+
+output "ecr_product_service_url" {
+  value = module.ecr.ecr_product_service_url
+}
+
+output "ecr_recommendations_service_url" {
+  value = module.ecr.ecr_recommendations_service_url
+}
+
+output "ecr_analytics_service_url" {
+  value = module.ecr.ecr_analytics_service_url
+}
+
+output "ecr_task_execution_role_arn" {
+  value = module.ecr.ecr_task_execution_role_arn
+}
