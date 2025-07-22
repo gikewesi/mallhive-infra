@@ -1,3 +1,4 @@
+/*
 variable "vpc_id" {
   description = "VPC where the ALB resides"
   type        = string
@@ -27,3 +28,4 @@ variable "backend_record_fqdn" {
   description = "DNS record name (e.g. api.mallhive.internal)"
   type        = string
 }
+*/

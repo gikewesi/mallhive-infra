@@ -1,0 +1,46 @@
+image:
+  repository: 123456789012.dkr.ecr.us-east-1.amazonaws.com/mallhive-user-service
+  tag: latest
+  pullPolicy: IfNotPresent
+
+env:
+  DB_HOST: your-db.xxxxxxxxx.us-east-1.rds.amazonaws.com
+  DB_PORT: "5432"
+  DB_NAME: users_db
+  DB_SECRET_NAME: user-service/db-creds
+  NOTIFICATION_SERVICE_URL: "https://notification.internal-mallhive.com"
+  CORS_ORIGINS: "https://app.internal-mallhive.com"
+
+ingress:
+  enabled: true
+  className: alb
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internal
+    alb.ingress.kubernetes.io/subnets: subnet-abcde123,subnet-xyz7890
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/backend-protocol: HTTP
+    alb.ingress.kubernetes.io/healthcheck-path: /health
+  hosts:
+    - host: api.internal-mallhive.com
+      paths:
+        - path: /
+          pathType: Prefix
+
+resources:
+  requests:
+    cpu: "250m"
+    memory: "512Mi"
+  limits:
+    cpu: "500m"
+    memory: "1Gi"
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 60
+
+serviceAccount:
+  name: user-service-sa
+  irsaArn: arn:aws:iam::123456789012:role/user-service-irsa-role

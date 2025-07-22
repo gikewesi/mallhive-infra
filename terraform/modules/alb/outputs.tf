@@ -1,3 +1,4 @@
+/*
 output "alb_dns_name" {
   value = aws_lb.private_alb.dns_name
 }
@@ -13,3 +14,4 @@ output "target_group_arn" {
 output "listener_arn" {
   value = aws_lb_listener.http.arn
 }
+*/

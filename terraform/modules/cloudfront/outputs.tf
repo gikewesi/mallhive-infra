@@ -9,3 +9,7 @@ output "cloudfront_domain_name" {
 output "cloudfront_zone_id" {
   value = "Z2FDTNDATAQYW2"
 }
+
+output "cloudfront_distribution_arn" {
+  value = aws_cloudfront_distribution.cdn.arn
+}

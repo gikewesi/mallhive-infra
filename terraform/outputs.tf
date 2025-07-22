@@ -63,9 +63,26 @@ output "cloudfront_domain_name" {
 }
 
 #acm
-output "acm_certificate_arn" {
-  value = module.acm.certificate_arn
+output "certificate_arn" {
+  description = "ACM certificate ARN for mallhive.com"
+  value       = module.acm.certificate_arn
 }
+
+output "internal_acm_certificate_arn" {
+  description = "ACM certificate ARN for *.internal.mallhive.com"
+  value       = module.acm.internal_acm_certificate_arn
+}
+
+output "internal_acm_certificate_validation_status" {
+  description = "Validation status of internal ACM certificate"
+  value       = module.acm.internal_acm_certificate_validation_status
+}
+
+output "internal_acm_domain_name" {
+  description = "Domain name the internal ACM cert is issued for"
+  value       = module.acm.internal_acm_domain_name
+}
+
 
 #s3
 output "bucket_domain_name" {
@@ -89,13 +106,48 @@ output "frontend_record_fqdn" {
   value       = module.dns.frontend_record_fqdn
 }
 
-output "backend_record_fqdn" {
-  description = "FQDN for api.internal.mallhive.com alias"
-  value       = module.dns.backend_record_fqdn
+
+output "user_record_fqdn" {
+  value       = module.dns.user_record_fqdn
+  description = "Internal FQDN for user microservice"
+}
+
+output "order_record_fqdn" {
+  value       = module.dns.order_record_fqdn
+  description = "Internal FQDN for order microservice"
+}
+
+output "cart_record_fqdn" {
+  value       = module.dns.cart_record_fqdn
+  description = "Internal FQDN for cart microservice"
+}
+
+output "payment_record_fqdn" {
+  value       = module.dns.payment_record_fqdn
+  description = "Internal FQDN for payment microservice"
+}
+
+output "product_record_fqdn" {
+  value       = module.dns.product_record_fqdn
+  description = "Internal FQDN for product microservice"
+}
+
+output "notification_record_fqdn" {
+  value       = module.dns.notification_record_fqdn
+  description = "Internal FQDN for notification microservice"
+}
+
+output "analytics_record_fqdn" {
+  value       = module.dns.analytics.fqdn
+  description = "Internal FQDN for analytics microservice"
+}
+output "recommendation_record_fqdn" {
+  value       = module.dns.analytics_record_fqdn
+  description = "Internal FQDN for recommendation microservice"
 }
 
 #alb
-
+/*
 output "alb_dns_name" {
   value = module.alb.alb_dns_name
 }
@@ -111,6 +163,7 @@ output "target_group_arn" {
 output "listener_arn" {
   value = module.alb.listener_arn
 }
+*/
 
 
 output "bastion_1a_instance_id" {

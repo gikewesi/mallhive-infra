@@ -1,15 +1,16 @@
-variable "domain_name" {
-  description = "Primary domain to secure (e.g. www.mallhive.com)"
+variable "region" {
+  description = "AWS region to deploy resources"
   type        = string
+  default     = "us-east-1"
 }
 
 variable "hosted_zone_id" {
-  description = "Route 53 public hosted zone ID for the domain"
+  description = "Public Route53 Hosted Zone ID for mallhive.com"
   type        = string
 }
 
-variable "alt_names" {
-  description = "Optional list of Subject Alternative Names"
-  type        = list(string)
-  default     = []
+variable "private_zone_name" {
+  description = "Private Route53 hosted zone name for backend"
+  type        = string
+  default     = "internal.mallhive.com"
 }

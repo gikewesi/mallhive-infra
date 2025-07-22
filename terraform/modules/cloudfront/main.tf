@@ -1,9 +1,9 @@
 resource "aws_cloudfront_origin_access_control" "oac" {
-  name                              = "mallhive-oac"
-  description                       = "OAC for mallhive CloudFront to access S3"
-  origin_access_control_origin_type = "s3"
-  signing_behavior                  = "always"
-  signing_protocol                  = "sigv4"
+  name                               = "mallhive-oac"
+  description                        = "OAC for mallhive CloudFront to access S3"
+  origin_access_control_origin_type  = "s3"
+  signing_behavior                   = "always"
+  signing_protocol                   = "sigv4"
 }
 
 resource "aws_cloudfront_distribution" "cdn" {
@@ -31,9 +31,9 @@ resource "aws_cloudfront_distribution" "cdn" {
       }
     }
 
-    min_ttl                = 0
-    default_ttl            = 3600
-    max_ttl                = 86400
+    min_ttl     = 0
+    default_ttl = 3600
+    max_ttl     = 86400
   }
 
   viewer_certificate {
@@ -51,26 +51,28 @@ resource "aws_cloudfront_distribution" "cdn" {
   aliases = [var.domain_name]
 }
 
+data "aws_caller_identity" "current" {}
+
 resource "aws_s3_bucket_policy" "allow_cloudfront" {
-  bucket = "microfrontend-s3"
+  bucket = var.bucket_name
 
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Effect    = "Allow"
-        Principal = {
-          Service = "cloudfront.amazonaws.com"
-        }
-        Action    = "s3:GetObject"
-        Resource  = "${var.bucket_arn}/*"
+        Effect = "Allow"
+        Principal = "*"
+        Action = "s3:GetObject"
+        Resource = "${var.bucket_arn}/*"
         Condition = {
           StringEquals = {
             "AWS:SourceArn" = aws_cloudfront_distribution.cdn.arn
+          }
+          StringEqualsIfExists = {
+            "AWS:SourceAccount" = data.aws_caller_identity.current.account_id
           }
         }
       }
     ]
   })
 }
-

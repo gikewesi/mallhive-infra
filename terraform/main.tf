@@ -74,14 +74,18 @@ module "cloudfront" {
   acm_certificate_arn    = module.acm.certificate_arn
   domain_name            = "www.mallhive.com"
 }
-
-module "acm" {
-  source          = "./modules/acm"
-  domain_name     = "mallhive.com"
-  alt_names       = [] # optional
-  hosted_zone_id  = module.dns.public_zone_id
+provider "aws" {
+  alias  = "us_east_1"
 }
 
+module "acm" {
+  source            = "../acm"
+  hosted_zone_id    = var.hosted_zone_id
+  private_zone_name = var.private_zone_name
+  region            = var.region
+}
+
+/*
 module "alb" {
   source                = "./modules/alb"
   vpc_id                = module.vpc.vpc_id
@@ -91,6 +95,7 @@ module "alb" {
   private_zone_id       = module.dns.private_zone_id
   backend_record_fqdn   = module.dns.backend_record_fqdn
 }
+*/
 
 module "bastion" {
   source = "./modules/bastion-host"
