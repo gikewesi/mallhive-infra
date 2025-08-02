@@ -2,11 +2,17 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: user-service
+  name: internal-alb-ingress
+  namespace: {{ .Values.namespace }}
   annotations:
-    {{- range $key, $value := .Values.ingress.annotations }}
-    {{ $key }}: {{ $value | quote }}
-    {{- end }}
+    kubernetes.io/ingress.class: {{ .Values.ingress.className }}
+    alb.ingress.kubernetes.io/scheme: {{ .Values.ingress.scheme }}
+    alb.ingress.kubernetes.io/certificate-arn: {{ .Values.ingress.certificateArn }}
+    alb.ingress.kubernetes.io/group.name: {{ .Values.ingress.groupName }}
+    alb.ingress.kubernetes.io/subnets: {{ .Values.ingress.subnets }}
+    alb.ingress.kubernetes.io/target-type: {{ .Values.ingress.targetType }}
+    alb.ingress.kubernetes.io/listen-ports: '{{ .Values.ingress.listenPorts }}'
+    alb.ingress.kubernetes.io/ssl-redirect: '{{ .Values.ingress.sslRedirect }}'
 spec:
   ingressClassName: {{ .Values.ingress.className }}
   rules:
@@ -19,9 +25,9 @@ spec:
             pathType: {{ .pathType }}
             backend:
               service:
-                name: user-service
+                name: {{ .serviceName }}
                 port:
-                  number: 80
+                  number: {{ .servicePort }}
           {{- end }}
     {{- end }}
 {{- end }}

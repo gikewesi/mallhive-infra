@@ -2,8 +2,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: user-service
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: user-service
 spec:
-  replicas: 2
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: user-service
@@ -11,33 +14,17 @@ spec:
     metadata:
       labels:
         app: user-service
-        eks.amazonaws.com/fargate-profile: user-service
+      annotations:
+        prometheus.io/scrape: "{{ .Values.monitoring.prometheus }}"
+        prometheus.io/port: "8000"
+        prometheus.io/path: "/metrics"
     spec:
       serviceAccountName: {{ .Values.serviceAccount.name }}
       containers:
         - name: user-service
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: 3000
-          envFrom:
-            - configMapRef:
-                name: user-config
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: 3000
-            initialDelaySeconds: 10
-            periodSeconds: 5
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 3000
-            initialDelaySeconds: 30
-            periodSeconds: 10
+            - containerPort: 8000
           resources:
-            requests:
-              cpu: {{ .Values.resources.requests.cpu }}
-              memory: {{ .Values.resources.requests.memory }}
-            limits:
-              cpu: {{ .Values.resources.limits.cpu }}
-              memory: {{ .Values.resources.limits.memory }}
+            {{- toYaml .Values.resources | nindent 12 }}

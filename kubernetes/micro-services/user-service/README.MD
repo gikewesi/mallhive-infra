@@ -41,11 +41,10 @@ user-service/
 │       ├── ingress.yaml
 │       ├── service.yaml
 │       ├── serviceaccount.yaml
-├── kustomize/                  # Kustomize setup for custom overlays
-│   ├── kustomization.yaml
-│   ├── namespace.yaml
-│   └── network-policy.yaml
-
+│       ├── network-policy.yaml
+│       ├── namespace.yaml
+├── README.MD
+      
 ```
 ---
 
@@ -70,31 +69,20 @@ user-service/
 
 Non-sensitive environment variables (stored in a ConfigMap):
 
-| Variable                   | Purpose                                  |
-| -------------------------- | ---------------------------------------- |
-| `DB_HOST`                  | Hostname of the RDS PostgreSQL instance  |
-| `DB_PORT`                  | Port (default `5432`)                    |
-| `DB_NAME`                  | Database name                            |
-| `DB_SECRET_NAME`           | AWS Secrets Manager name for DB creds    |
-| `NOTIFICATION_SERVICE_URL` | URL of the external notification service |
-| `CORS_ORIGINS`             | Allowed CORS origins                     |
+| Variable                             | Purpose                                  |
+| -------------------------------------| ---------------------------------------- |
+| `USER_SERVICE_SECRET_NAME`           | AWS Secrets Manager name for DB creds    |
 
 ---
 
-##  Deployment Options
+##  Deployment
 
-### Option 1: Helm
+### Helm
 
 ```bash
 helm upgrade --install user-service ./helm \
   --namespace user-service \
   --create-namespace
-```
-
-### Option 2: Kustomize
-
-```bash
-kubectl apply -k ./kustomize/
 ```
 
 ---
@@ -105,7 +93,7 @@ kubectl apply -k ./kustomize/
 * The ALB is provisioned and managed via annotations in the Ingress resource.
 * DNS is managed in **Route 53**, and the subdomain points to the ALB.
 
-**NetworkPolicy** is defined to restrict pod ingress only from allowed IP blocks (e.g. the ALB CIDR).
+**NetworkPolicy** is defined to restrict pod ingress only from allowed IP blocks.
 
 ---
 
@@ -133,7 +121,7 @@ Before deploying:
 * Internal ALB ingress controller installed and IAM permissions set
 * ECR repo named `mallhive-user-service` with latest image
 * Secrets created in AWS Secrets Manager
-* Route53 domain for `api.internal-mallhive.com` pointing to the ALB
+* Route53 domain for `user.internal.mallhive.com` pointing to the ALB
 
 ---
 

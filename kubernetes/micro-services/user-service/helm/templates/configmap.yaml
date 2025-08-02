@@ -3,9 +3,4 @@ kind: ConfigMap
 metadata:
   name: user-config
 data:
-  DB_HOST: {{ .Values.env.DB_HOST }}
-  DB_PORT: {{ .Values.env.DB_PORT }}
-  DB_NAME: {{ .Values.env.DB_NAME }}
-  DB_SECRET_NAME: {{ .Values.env.DB_SECRET_NAME }}
-  NOTIFICATION_SERVICE_URL: {{ .Values.env.NOTIFICATION_SERVICE_URL | quote }}
-  CORS_ORIGINS: {{ .Values.env.CORS_ORIGINS | quote }}
+  USER_SERVICE_SECRET_NAME: {{ .Values.env.USER_SERVICE_SECRET_NAME }}

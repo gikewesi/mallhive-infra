@@ -1,18 +1,33 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-alb-to-user
-  namespace: user-service
+  name: user-service-policy
+  namespace: {{ .Values.namespace }}
 spec:
   podSelector:
     matchLabels:
       app: user-service
   policyTypes:
     - Ingress
+    - Egress
   ingress:
     - from:
         - ipBlock:
-            cidr: 10.0.0.0/8  # adjust this to match ALB subnet CIDRs
+            cidr: {{ .Values.networkPolicy.ingressSourceCidr }}
       ports:
         - protocol: TCP
-          port: 3000
+          port: {{ .Values.service.port }}
+  egress:
+    - to:
+        - ipBlock:
+            cidr: {{ .Values.networkPolicy.dbCidr }}
+      ports:
+        - protocol: TCP
+          port: 5432
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              app: notification
+      ports:
+        - protocol: TCP
+          port: 443
