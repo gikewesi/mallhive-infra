@@ -1,6 +1,6 @@
 # 🧾 User Service – Deployment on AWS EKS with Fargate
 
-This repository contains the Kubernetes Helm chart and deployment configuration for the **User Service**, a FastAPI-based authentication microservice designed to run securely and scalably on **Amazon EKS with Fargate**.
+This folder contains the Kubernetes Helm chart and deployment configuration for the **User Service**, a FastAPI-based authentication microservice designed to run securely and scalably on **Amazon EKS with Fargate**.
 
 ---
 
