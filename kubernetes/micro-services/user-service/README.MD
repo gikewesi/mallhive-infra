@@ -90,10 +90,15 @@ helm upgrade --install user-service ./helm \
 | EKS Control Plane    | CloudTrail, CloudWatch Logs                    |
 | Fargate Metrics      | CloudWatch Container Insights                  |
 | Pod Health & Metrics | Prometheus + AlertManager                      |
-| Logs                 | CloudWatch or third-party logging like Datadog |
+| Logs                 | CloudWatch or Grafana |
 | App Tracing (opt)    | OpenTelemetry or X-Ray                         |
 
 ---
+
+## 🗺️ Architecture Diagram
+
+![User Service Architecture](./USER-SERVICE.drawio.png)
+
 
 ## ✅ Requirements
 
