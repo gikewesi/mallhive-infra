@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: product-service-policy
+  namespace: {{ .Values.namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: product-service
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - ipBlock:
+            cidr: {{ .Values.networkPolicy.ingressSourceCidr }}
+      ports:
+        - protocol: TCP
+          port: {{ .Values.service.port }}
+  egress:
+    - to:
+        - ipBlock:
+            cidr: {{ .Values.networkPolicy.dbCidr }}
+      ports:
+        - protocol: TCP
+          port: 5432
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              app: notification
+      ports:
+        - protocol: TCP
+          port: 443

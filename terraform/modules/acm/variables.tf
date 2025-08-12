@@ -4,7 +4,7 @@ variable "region" {
   default     = "us-east-1"
 }
 
-variable "hosted_zone_id" {
+variable "public_zone_id" {
   description = "Public Route53 Hosted Zone ID for mallhive.com"
   type        = string
 }

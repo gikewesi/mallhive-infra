@@ -32,7 +32,7 @@ resource "aws_route53_record" "cert_validation" {
     }
   }
 
-  zone_id = var.hosted_zone_id
+  zone_id = var.public_zone_id
   name    = each.value.name
   type    = each.value.type
   ttl     = 300
@@ -46,10 +46,7 @@ resource "aws_acm_certificate_validation" "cert" {
 }
 
 # Private ACM for internal services (*.internal.mallhive.com)
-data "aws_route53_zone" "private" {
-  name         = var.private_zone_name
-  private_zone = true
-}
+
 
 resource "aws_acm_certificate" "internal_cert" {
   provider          = aws.us_east_1
@@ -61,7 +58,7 @@ resource "aws_acm_certificate" "internal_cert" {
   }
 
   tags = {
-    Name = "internal-mallhive-cert"
+    Name = "mallhive-internal-cert"
     Env  = "prod"
   }
 }
@@ -76,7 +73,7 @@ resource "aws_route53_record" "internal_cert_validation" {
     }
   }
 
-  zone_id = data.aws_route53_zone.private.zone_id
+  zone_id = var.public_zone_id
   name    = each.value.name
   type    = each.value.type
   ttl     = 300

@@ -71,9 +71,10 @@ resource "aws_subnet" "isolated_1b" {
 resource "aws_db_subnet_group" "db_subnet_group" {
   name       = "db-subnet-group"
   subnet_ids = [
-    var.isolated_subnet_1a_id,
-    var.isolated_subnet_1b_id
-  ]
+    aws_subnet.isolated_1a.id,
+    aws_subnet.isolated_1b.id
+]
+
   description = "Subnet group for Databases"
 
   tags = {

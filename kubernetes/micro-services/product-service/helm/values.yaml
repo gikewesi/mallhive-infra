@@ -1,0 +1,59 @@
+namespace: product-service
+replicaCount: 2
+
+image:
+  repository: <your_ecr_repo>/product-service
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8000
+
+
+ingress:
+  enabled: true
+  className: alb
+  scheme: internal
+  certificateArn: arn:aws:acm:us-east-1:123456789012:certificate/abcde-12345-fghij-67890
+  groupName: mallhive
+  subnets: subnet-abc12345,subnet-def67890
+  targetType: ip
+  listenPorts: '[{"HTTP": 80}, {"HTTPS": 443}]'
+  sslRedirect: '443'
+
+  hosts:
+    - host: product.internal.mallhive.com
+      paths:
+        - path: /
+          pathType: Prefix
+          serviceName: product-service
+          servicePort: 8000
+
+resources:
+  requests:
+    cpu: "250m"
+    memory: "512Mi"
+  limits:
+    cpu: "500m"
+    memory: "1Gi"
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 60
+
+serviceAccount:
+  create: true
+  name: product-service-sa
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::<account_id>:role/<IRSA_role_name>
+
+monitoring:
+  prometheus: true
+
+
+networkPolicy:
+  ingressSourceCidr: 10.0.0.0/16  # CIDR for ALB or frontend
+  dbCidr: 10.0.1.0/24  # CIDR of subnet where RDS is hosted

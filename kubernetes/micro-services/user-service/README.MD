@@ -85,14 +85,14 @@ helm upgrade --install user-service ./helm \
 
 ## 📊 Monitoring & Observability
 
-| Layer                | Tooling                                        |
-| -------------------- | ---------------------------------------------- |
-| EKS Control Plane    | CloudTrail, CloudWatch Logs                    |
-| Fargate Metrics      | CloudWatch Container Insights                  |
-| Pod Health & Metrics | Prometheus + AlertManager                      |
-| Logs                 | CloudWatch or Grafana |
-| App Tracing (opt)    | OpenTelemetry or X-Ray                         |
-
+| Layer                | Tooling                                                                 |
+| -------------------- | ----------------------------------------------------------------------- |
+| EKS Control Plane    | Cloudwatch  |
+| Fargate Pod Metrics  | Prometheus (cAdvisor via kubelet), Alertmanager for alerts               |
+| Logs                 | Loki + Promtail (pod logs, Kubernetes events, ingress logs)             |
+| Visualization                | Grafana (single pane for metrics, logs, and traces)                     |
+| Cluster Autoscaling    | Karpenter for dynamic scaling of workloads                              |
+| Policy & Governance    | Kyverno for admission control, security, and compliance policies        |
 ---
 
 ## 🗺️ Architecture Diagram

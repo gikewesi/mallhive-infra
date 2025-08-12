@@ -80,9 +80,7 @@ provider "aws" {
 
 module "acm" {
   source            = "../acm"
-  hosted_zone_id    = var.hosted_zone_id
-  private_zone_name = var.private_zone_name
-  region            = var.region
+  public_zone_id    = module.dns.public_zone_id
 }
 
 /*
