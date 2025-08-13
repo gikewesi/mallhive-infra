@@ -1,5 +1,5 @@
 namespace: user-service
-replicaCount: 2
+replicaCount: 5
 
 image:
   repository: <your_ecr_repo>/user-service
@@ -7,8 +7,7 @@ image:
   pullPolicy: IfNotPresent
 
 service:
-  type: ClusterIP
-  port: 8000
+  port: 4600
 
 
 ingress:
@@ -28,7 +27,7 @@ ingress:
         - path: /
           pathType: Prefix
           serviceName: user-service
-          servicePort: 8000
+          servicePort: 4600
 
 resources:
   requests:
@@ -40,8 +39,8 @@ resources:
 
 autoscaling:
   enabled: true
-  minReplicas: 2
-  maxReplicas: 5
+  minReplicas: 5
+  maxReplicas: 15
   targetCPUUtilizationPercentage: 60
 
 serviceAccount:

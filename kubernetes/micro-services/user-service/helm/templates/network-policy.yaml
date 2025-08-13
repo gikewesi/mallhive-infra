@@ -10,24 +10,62 @@ spec:
   policyTypes:
     - Ingress
     - Egress
+
+  # Allow ingress only from ALB's CIDR
   ingress:
     - from:
         - ipBlock:
             cidr: {{ .Values.networkPolicy.ingressSourceCidr }}
-      ports:
-        - protocol: TCP
-          port: {{ .Values.service.port }}
+
   egress:
+    # Egress to database
     - to:
         - ipBlock:
             cidr: {{ .Values.networkPolicy.dbCidr }}
       ports:
         - protocol: TCP
           port: 5432
+
+    # Egress to AWS ALB (for sending requests)
+    - to:
+        - ipBlock:
+            cidr: {{ .Values.networkPolicy.ingressSourceCidr }}
+      ports:
+        - protocol: TCP
+          port: 443
+
+    # Egress to analytics service
     - to:
         - namespaceSelector:
+            matchLabels: 
+              name: analytics-service
+          podSelector:
+            matchLabels:
+              app: analytics
+      ports:
+        - protocol: TCP
+          port: 4800
+
+    # Egress to recommendation service
+    - to:
+        - namespaceSelector:
+            matchLabels: 
+              name: recommendation-service
+          podSelector:
+            matchLabels:
+              app: recommendation
+      ports:
+        - protocol: TCP
+          port: 4700
+
+    # Egress to notification service
+    - to:
+        - namespaceSelector:
+            matchLabels: 
+              name: notification-service
+          podSelector:
             matchLabels:
               app: notification
       ports:
         - protocol: TCP
-          port: 443
+          port: 4400

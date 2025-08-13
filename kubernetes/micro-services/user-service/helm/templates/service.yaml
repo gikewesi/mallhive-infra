@@ -6,9 +6,11 @@ metadata:
   labels:
     app: user-service
 spec:
+  type: ClusterIP
   selector:
     app: user-service
   ports:
-    - protocol: TCP
-      port: 8000
-      targetPort: 8000
+    - name: http
+      protocol: TCP
+      port: 4600        
+      targetPort: 4600
