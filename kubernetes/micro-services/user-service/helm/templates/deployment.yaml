@@ -4,7 +4,7 @@ metadata:
   name: user-service
   namespace: {{ .Values.namespace }}
   labels:
-    app: user-service
+    app: user
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
       labels:
-        app: user-service
+        app: user
       annotations:
         prometheus.io/scrape: "{{ .Values.monitoring.prometheus }}"
         prometheus.io/port: "8000"
