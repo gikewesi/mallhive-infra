@@ -1,0 +1,58 @@
+namespace: order-service
+replicaCount: 5
+
+image:
+  repository: <your_ecr_repo>/order-service
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  port: 4200
+
+
+ingress:
+  enabled: true
+  className: alb
+  scheme: internal
+  certificateArn: arn:aws:acm:us-east-1:123456789012:certificate/abcde-12345-fghij-67890
+  groupName: mallhive
+  subnets: subnet-abc12345,subnet-def67890
+  targetType: ip
+  listenPorts: '[{"HTTP": 80}, {"HTTPS": 443}]'
+  sslRedirect: '443'
+
+  hosts:
+    - host: order.internal.mallhive.com
+      paths:
+        - path: /
+          pathType: Prefix
+          serviceName: order-service
+          servicePort: 4200
+
+resources:
+  requests:
+    cpu: "250m"
+    memory: "512Mi"
+  limits:
+    cpu: "500m"
+    memory: "1Gi"
+
+autoscaling:
+  enabled: true
+  minReplicas: 5
+  maxReplicas: 15
+  targetCPUUtilizationPercentage: 60
+
+serviceAccount:
+  create: true
+  name: order-service-sa
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::<account_id>:role/<IRSA_role_name>
+
+monitoring:
+  prometheus: true
+
+
+networkPolicy:
+  ingressSourceCidr: 10.0.0.0/16  # CIDR for ALB or frontend
+  dbCidr: 10.0.1.0/24  # CIDR of subnet where RDS is hosted

@@ -1,0 +1,96 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: order-service-policy
+  namespace: {{ .Values.namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: order
+  policyTypes:
+    - Ingress
+    - Egress
+
+  # Allow ingress  from ALB's CIDR
+  ingress:
+    - from:
+        - ipBlock:
+            cidr: {{ .Values.networkPolicy.ingressSourceCidr }}
+
+  egress:
+    # Egress to database
+    - to:
+        - ipBlock:
+            cidr: {{ .Values.networkPolicy.dbCidr }}
+      ports:
+        - protocol: TCP
+          port: 5432
+
+    # Egress to AWS ALB (for sending requests)
+    - to:
+        - ipBlock:
+            cidr: {{ .Values.networkPolicy.ingressSourceCidr }}
+      ports:
+        - protocol: TCP
+          port: 443
+
+    # Egress to analytics service
+    - to:
+        - namespaceSelector:
+            matchLabels: 
+              name: analytics-service
+          podSelector:
+            matchLabels:
+              app: analytics
+      ports:
+        - protocol: TCP
+          port: 4800
+
+    # Egress to recommendation service
+    - to:
+        - namespaceSelector:
+            matchLabels: 
+              name: recommendation-service
+          podSelector:
+            matchLabels:
+              app: recommendation
+      ports:
+        - protocol: TCP
+          port: 4700
+
+
+    # Egress to product service
+    - to:
+        - namespaceSelector:
+            matchLabels: 
+              name: product-service
+          podSelector:
+            matchLabels:
+              app: product
+      ports:
+        - protocol: TCP
+          port: 4100
+
+    # Egress to payment service
+    - to:
+        - namespaceSelector:
+            matchLabels: 
+              name: payment-service
+          podSelector:
+            matchLabels:
+              app: payment
+      ports:
+        - protocol: TCP
+          port: 4500
+
+    # Egress to notification service
+    - to:
+        - namespaceSelector:
+            matchLabels: 
+              name: notfication-service
+          podSelector:
+            matchLabels:
+              app: notification
+      ports:
+        - protocol: TCP
+          port: 4400
