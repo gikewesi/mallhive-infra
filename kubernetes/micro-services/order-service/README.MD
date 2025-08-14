@@ -1,59 +1,56 @@
-# 🛒 Cart Service – Deployment on AWS EKS with Fargate
+# 📦 Order Service – Deployment on AWS EKS with Fargate
 
-This folder contains the Kubernetes Helm chart and deployment configuration for the **Cart Service**, a Go-based microservice for managing shopping cart operations within the Mallhive platform. It is designed to run securely and scalably on **Amazon EKS with Fargate**.
+This folder contains the Kubernetes Helm chart and deployment configuration for the **Order Service**, a Go-based microservice responsible for **order placement, tracking, and fulfillment**. It is designed to run securely and scalably on **Amazon EKS with Fargate**.
 
 ---
 
 ## 🧩 Overview
 
-The **Cart Service** handles:
+The **Order Service** is the backbone of Mallhive's ordering system. It:
 
-* Adding and removing products from a cart
-* Fetching cart contents for users
-* Tracking product availability during checkout
-* Publishing checkout events to other services
-* Maintaining cart state in **Redis**
-* Persisting inventory data in **PostgreSQL on AWS RDS**
-* Secure HTTPS ingress via **ACM-backed ALB**
+* Accepts and processes new orders
+* Tracks order status and fulfillment
+* Interacts with product, payment, analytics, and notification services
+* Publishes domain events via **Kafka** or **AWS EventBridge**
+* Stores and queries order data in **PostgreSQL on AWS RDS**
+* Runs in a fully containerized, serverless EKS Fargate environment
 
 ---
 
 ## 🔧 Architecture
 
-* **Kubernetes Platform**: Amazon EKS (1 cluster, Fargate profiles per microservice)
+* **Kubernetes Platform**: Amazon EKS (1 cluster, Fargate profile for `order-service`)
 * **Networking**: Internal **ALB** + **Route 53**, private subnets only
-* **In-Memory Store**: Redis (for cart state)
-* **Database**: PostgreSQL (AWS RDS for inventory data)
-* **Events**: AWS SNS for publishing checkout events
-* **Image Registry**: Amazon ECR (`mallhive-cart-service`)
-* **Ingress Security**: HTTPS with **ACM certificate**, internal DNS via `cart.internal.mallhive.com`
-* **Namespace**: `cart-service` (with its own Fargate profile)
-* **Service Communication**: Across microservices using DNS (`service-name.namespace.svc.cluster.local`) + `NetworkPolicy`
+* **Database**: PostgreSQL (AWS RDS)
+* **Message/Event Bus**: Kafka or AWS SQS, AWS EventBridge
+* **Image Registry**: Amazon ECR (`mallhive-order-service`)
+* **Ingress Security**: HTTPS with **ACM certificate**, internal DNS via `order.internal.mallhive.com`
+* **Namespace**: `order-service`
+* **Service Communication**: Across microservices using DNS + `NetworkPolicy`
 
 ---
 
-## 📡 Service Communication
+## 🔗 Service Communication
 
-### Services/Microfrontends that Send Requests to Cart Service
+**Services that send requests to Order Service**
+💳 **checkout.mallhive.com** (Microfrontend) → Creates a new order
+👤 **user-profile.mallhive.com** (Microfrontend) → Fetches user’s past orders
 
-* **🛒 cart.mallhive.com (Microfrontend)** – Fetch cart, add/remove items
-* **💳 checkout.mallhive.com (Microfrontend)** – Get final cart details before checkout
+**Services that receive requests from Order Service**
+📦 **Product Microservice** → Update stock when an order is placed
+📩 **Notification Microservice** → Send order confirmation to the user
+💰 **Payment Microservice** → Initiate and verify payment for the order
+📊 **Analytics Microservice** → Log order success or failure events
 
-### Services the Cart Service Sends Requests/Events to
-
-* **✅ Product Service** – Confirm item status on checkout (via event)
-* **📊 Analytics Service** – Send cart usage metrics/events
-
-### Services that Send Direct Requests to Cart Service
-
-* **None** – No direct service-to-service incoming requests
+**Services that respond back to Order Service**
+💰 **Payment Microservice** → Confirms if payment was successful or failed
 
 ---
 
 ## 📁 Folder Structure
 
 ```
-cart-service/
+order-service/
 ├── helm/
 │   ├── Chart.yaml
 │   ├── values.yaml
@@ -73,39 +70,35 @@ cart-service/
 
 ## 🔐 Secrets & IAM (IRSA)
 
-The Cart Service **does not store secrets in Kubernetes**. All credentials (e.g., DB credentials, Redis connection details, SNS topics) are fetched at runtime from **AWS Secrets Manager**, using **IAM Role for Service Account (IRSA)**.
+The service **does not store any secrets in Kubernetes**. All credentials (e.g., DB credentials, Kafka/SQS credentials) are fetched at runtime from **AWS Secrets Manager**, using **IAM Role for Service Account (IRSA)**.
 
-### IAM Permissions
+### IAM Permissions Example
 
 ```json
 {
   "Effect": "Allow",
   "Action": [
-    "secretsmanager:GetSecretValue",
-    "sns:Publish"
+    "secretsmanager:GetSecretValue"
   ],
-  "Resource": [
-    "arn:aws:secretsmanager:us-east-1:123456789012:secret:cart-service/*",
-    "arn:aws:sns:us-east-1:123456789012:checkout-events"
-  ]
+  "Resource": "arn:aws:secretsmanager:us-east-1:123456789012:secret:order-service/*"
 }
 ```
 
 ---
 
-## 📦 Deployment via Helm
+## 🚀 Deployment via Helm
 
 ```bash
-helm upgrade --install cart-service ./helm \
-  --namespace cart-service \
+helm upgrade --install order-service ./helm \
+  --namespace order-service \
   --create-namespace
 ```
 
-> This assumes:
+> **Prerequisites:**
 >
-> * You have IRSA and Fargate profile created for `cart-service`
-> * The ECR image is pushed
-> * Your ACM cert + Route 53 entries are valid
+> * IRSA and Fargate profile created for `order-service`
+> * ECR image is pushed (`mallhive-order-service`)
+> * ACM certificate and Route 53 entries are valid
 
 ---
 
@@ -117,20 +110,26 @@ helm upgrade --install cart-service ./helm \
 | Fargate Pod Metrics | Prometheus (cAdvisor via kubelet), Alertmanager for alerts       |
 | Logs                | Loki + Promtail (pod logs, Kubernetes events, ingress logs)      |
 | Visualization       | Grafana (single pane for metrics, logs, and traces)              |
-| Cluster Autoscaling | Karpenter for dynamic scaling of workloads                       |
+| Event Processing    | Kafka/AWS SQS monitoring dashboards + EventBridge metrics        |
 | Policy & Governance | Kyverno for admission control, security, and compliance policies |
 
 ---
 
+## 🗺️ Architecture Diagram
+
+![Order Service Architecture](./ORDER-SERVICE.drawio.png)
+
+---
 
 ## ✅ Requirements
 
-* ✅ EKS cluster w/ Fargate enabled
+* ✅ EKS cluster with Fargate enabled
 * ✅ IRSA-enabled `ServiceAccount` and IAM role
-* ✅ RDS PostgreSQL and Redis in same VPC
-* ✅ ALB Ingress Controller and valid ACM cert
-* ✅ DNS record in Route 53 (`cart.internal.mallhive.com`)
+* ✅ PostgreSQL (AWS RDS) in same VPC
+* ✅ Kafka/SQS + EventBridge configured
+* ✅ ALB Ingress Controller and valid ACM certificate
+* ✅ Route 53 DNS record
 * ✅ Helm installed and configured with kubeconfig
-* ✅ ECR image pushed (`mallhive-cart-service`)
+* ✅ ECR image pushed (`mallhive-order-service`)
 
 ---
