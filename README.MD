@@ -7,7 +7,7 @@ It manages everything from provisioning clusters and deploying services to monit
 
 ## 📐 High-Level Architecture
 
-```mermaid
+```
 flowchart LR
     A[Users] --> B[Route53 / CloudFront / ALB]
     B --> C[EKS Cluster]
