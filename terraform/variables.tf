@@ -44,36 +44,12 @@ variable "users_password" {
   sensitive   = true
 }
 
-variable "vpc_id" {
-  description = "VPC where the ALB resides"
-  type        = string
-}
-
-variable "private_subnet_1a_id" {
-  description = "Private subnet ID in AZ 1a for the ALB"
-  type        = string
-}
-
-variable "private_subnet_1b_id" {
-  description = "Private subnet ID in AZ 1b for the ALB"
-  type        = string
-}
-
+/*
 variable "security_group_ids" {
   description = "Security groups for the ALB"
   type        = list(string)
 }
-
-variable "private_zone_id" {
-  description = "Route 53 private hosted zone ID for backend services"
-  type        = string
-}
-
-variable "backend_record_fqdn" {
-  description = "DNS record name (e.g. api.mallhive.internal)"
-  type        = string
-}
-
+*/
 
 variable "ami_id" {
   description = "AMI ID for the bastion host instance"
@@ -103,14 +79,19 @@ variable "repository_name" {
   default     = "mallhive"
 }
 
-
-variable "hosted_zone_id" {
-  description = "Public Route53 Hosted Zone ID for mallhive.com"
-  type        = string
-}
-
 variable "private_zone_name" {
   description = "Private Route53 hosted zone name for backend"
   type        = string
   default     = "internal.mallhive.com"
+}
+
+variable "security_group_ids" {
+  description = "List of security group IDs to attach to the ALB"
+  type        = list(string)
+  default     = []
+}
+#bastion_sg
+variable "allowed_ip" {
+  description = "Your office or VPN IP in CIDR notation"
+  type        = string
 }

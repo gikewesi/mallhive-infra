@@ -13,6 +13,10 @@ provider "aws" {
   region = var.aws_region
 }
 
+provider "aws" {
+  alias  = "us_east_1"
+}
+
 module "vpc" {
   source = "./modules/vpc"
   vpc_cidr = var.vpc_cidr
@@ -44,26 +48,26 @@ module "route_tables" {
   isolated_subnet_1b_id = module.subnets.isolated_subnet_1b_id
 }
 
+module "s3" {
+  source = "./modules/s3"
+}
+
+module "ecr" {
+  source          = "./modules/ecr"
+  repository_name = var.repository_name
+}
+
 module "rds" {
   source = "./modules/rds"
 
-  db_subnet_group_name     = module.subnets.db_subnet_group_name
-  vpc_security_group_ids   = [aws_security_group.rds.id]
-  users_password           = var.users_password
-}
-module "dns" {
-  source = "./modules/route53"
-
-  cloudfront_domain_name        = module.cloudfront.cloudfront_domain_name           
-  cloudfront_zone_id            = module.cloudfront.cloudfront_zone_id       
-
-  backend_internal_alb_dns_name = module.backend_alb.dns_name
-  backend_internal_alb_zone_id  = module.backend_alb.zone_id
+  db_subnet_group_name   = module.subnets.db_subnet_group_name
+  vpc_security_group_ids = []
+  users_password         = var.users_password
 }
 
-
-module "s3" {
-  source = "./modules/s3"
+module "acm" {
+  source            = "./modules/acm"
+  public_zone_id    = module.dns.public_zone_id
 }
 
 module "cloudfront" {
@@ -74,26 +78,26 @@ module "cloudfront" {
   acm_certificate_arn    = module.acm.certificate_arn
   domain_name            = "www.mallhive.com"
 }
-provider "aws" {
-  alias  = "us_east_1"
-}
 
-module "acm" {
-  source            = "../acm"
-  public_zone_id    = module.dns.public_zone_id
-}
-
-/*
 module "alb" {
-  source                = "./modules/alb"
-  vpc_id                = module.vpc.vpc_id
-  private_subnet_1a_id  = module.subnets.private_subnet_1a_id
-  private_subnet_1b_id  = module.subnets.private_subnet_1b_id
-  security_group_ids    = var.security_group_ids
-  private_zone_id       = module.dns.private_zone_id
-  backend_record_fqdn   = module.dns.backend_record_fqdn
+  source                    = "./modules/alb"
+  vpc_id                   = module.vpc.vpc_id
+  private_subnet_1a_id     = module.subnets.private_subnet_1a_id
+  private_subnet_1b_id     = module.subnets.private_subnet_1b_id
+  security_group_ids       = var.security_group_ids
+  alb_acm_certificate_arn  = module.acm.certificate_arn
+  private_zone_id          = module.dns.private_zone_id
 }
-*/
+
+module "dns" {
+  source = "./modules/route53"
+
+  cloudfront_domain_name        = module.cloudfront.cloudfront_domain_name           
+  cloudfront_zone_id            = module.cloudfront.cloudfront_zone_id       
+
+  backend_internal_alb_dns_name = module.alb.alb_dns_name
+  backend_internal_alb_zone_id  = module.alb.alb_zone_id
+}
 
 module "bastion" {
   source = "./modules/bastion-host"
@@ -114,7 +118,43 @@ module "eks" {
   private_subnet_1b_id = module.subnets.private_subnet_1b_id
 }
 
-module "ecr" {
-  source          = "./modules/ecr"
-  repository_name = var.repository_name
+#security groups
+module "bastion_sg" {
+  source     = "./modules/security/security-groups/bastion-sg"
+  vpc_id     = module.vpc.vpc_id
+  allowed_ip = var.allowed_ip
+}
+module "db_sg" {
+  source = "./modules/security/security-groups/db-sg"
+
+  vpc_id = module.vpc.vpc_id
+
+  trusted_sg_ids = [
+    module.eks_sg.eks_sg_id 
+  ]
+
+}
+module "eks_sg" {
+  source = "./modules/security/security-groups/eks-sg"
+  vpc_id               = module.vpc.vpc_id
+  alb_security_group_id = module.alb_sg.alb_sg_id
+}
+module "alb_sg" {
+  source = "./modules/security/security-groups/Lb-sg"
+  vpc_id = module.vpc.vpc_id
+  eks_sg_id    = module.eks_sg.eks_sg_id
+  cdn_ip_ranges = ["203.0.113.0/24","198.51.100.0/24"]  # CloudFront ranges
+
+}
+module "cache_sg" {
+  source = "./modules/security/security-groups/cache-sg"
+  vpc_id = module.vpc.vpc_id
+  eks_sg_id  =  module.eks_sg.eks_sg_id 
+  
+}
+
+module "vpc_sg" {
+  source = "./modules/security/security-groups/vpc-sg"
+  vpc_id     = module.vpc.vpc_id
+  eks_sg_id  = module.eks_sg.eks_sg_id
 }

@@ -101,10 +101,11 @@ output "private_zone_id" {
   value       = module.dns.private_zone_id
 }
 
-output "frontend_record_fqdn" {
+/*output "frontend_record_fqdn" {
   description = "FQDN for www.mallhive.com CloudFront alias"
   value       = module.dns.frontend_record_fqdn
 }
+
 
 
 output "user_record_fqdn" {
@@ -145,27 +146,62 @@ output "recommendation_record_fqdn" {
   value       = module.dns.analytics_record_fqdn
   description = "Internal FQDN for recommendation microservice"
 }
-
+*/
 #alb
-/*
 output "alb_dns_name" {
-  value = module.alb.alb_dns_name
+  description = "The DNS name of the load balancer"
+  value       = module.alb.alb_dns_name
 }
 
 output "alb_zone_id" {
-  value = module.alb.alb_zone_id
+  description = "The canonical hosted zone ID of the load balancer"
+  value       = module.alb.alb_zone_id
 }
 
-output "target_group_arn" {
-  value = module.alb.target_group_arn
+output "alb_arn" {
+  description = "The ARN of the load balancer"
+  value       = module.alb.alb_arn
 }
 
-output "listener_arn" {
-  value = module.alb.listener_arn
+output "https_listener_arn" {
+  description = "The ARN of the HTTPS listener"
+  value       = module.alb.https_listener_arn
 }
-*/
 
+# Individual target group ARNs (useful for ECS services)
+output "user_target_group_arn" {
+  value = module.alb.user_target_group_arn
+}
 
+output "cart_target_group_arn" {
+  value = module.alb.cart_target_group_arn
+}
+
+output "payment_target_group_arn" {
+  value = module.alb.payment_target_group_arn
+}
+
+output "order_target_group_arn" {
+  value = module.alb.order_target_group_arn
+}
+
+output "product_target_group_arn" {
+  value = module.alb.product_target_group_arn
+}
+
+output "analytics_target_group_arn" {
+  value = module.alb.analytics_target_group_arn
+}
+
+output "recommendation_target_group_arn" {
+  value = module.alb.recommendation_target_group_arn
+}
+
+output "notification_target_group_arn" {
+  value = module.alb.notification_target_group_arn
+}
+
+#bastion
 output "bastion_1a_instance_id" {
   description = "ID of the bastion host instance in subnet 1a"
   value       = module.bastion.bastion_1a_instance_id
@@ -245,4 +281,54 @@ output "ecr_analytics_service_url" {
 
 output "ecr_task_execution_role_arn" {
   value = module.ecr.ecr_task_execution_role_arn
+}
+
+
+#bastion_sg
+output "bastion_sg_id" {
+  description = "The ID of the bastion SG"
+  value       = module.bastion_sg.bastion_sg_id
+}
+#database_sg
+output "db_sg_id" {
+  description = "The ID of the database SG"
+  value       = module.db_sg.db_sg_id
+}
+
+#eks_sg
+output "eks_sg_id" {
+  description = "Security Group ID for EKS Fargate profile"
+  value       = module.eks_sg.eks_sg_id
+}
+
+output "eks_sg_arn" {
+  description = "Security Group ARN for EKS Fargate profile"
+  value       = module.eks_sg.eks_sg_arn
+}
+
+#alb_sg
+output "alb_sg_id" {
+  description = "Security Group ID for the Application Load Balancer"
+  value       = module.alb_sg.alb_sg_id
+}
+
+output "alb_sg_arn" {
+  description = "Security Group ARN for the Application Load Balancer"
+  value       = module.alb_sg.alb_sg_arn
+}
+
+#cache_sg
+output "cache_sg_id" {
+  description = "Security group ID for cache"
+  value       = module.cache_sg.cache_sg_id
+}
+#vpc_sg
+output "vpc_endpoints_sg_id" {
+  description = "Security Group ID for VPC interface endpoints"
+  value       = module.vpc_sg.vpc_sg_id
+}
+
+output "vpc_endpoints_sg_arn" {
+  description = "Security Group ARN for VPC interface endpoints"
+  value       = module.vpc_sg.vpc_sg_arn
 }

@@ -1,4 +1,3 @@
-/*
 variable "vpc_id" {
   description = "VPC where the ALB resides"
   type        = string
@@ -24,8 +23,8 @@ variable "private_zone_id" {
   type        = string
 }
 
-variable "backend_record_fqdn" {
-  description = "DNS record name (e.g. api.mallhive.internal)"
+variable "alb_acm_certificate_arn" {
+  description = "ARN of the ACM certificate to use for the ALB listener (must be in the ALB's region)"
   type        = string
 }
-*/
+

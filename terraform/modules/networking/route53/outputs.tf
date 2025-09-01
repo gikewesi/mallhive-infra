@@ -17,12 +17,6 @@ output "shoppingcart_record_fqdn" {
   value       = aws_route53_record.shoppingcart_microfrontend.fqdn
   description = "FQDN for shoppingcart frontend microfrontend"
 }
-
-output "product_record_fqdn" {
-  value       = aws_route53_record.product_microfrontend.fqdn
-  description = "FQDN for product frontend microfrontend"
-}
-
 output "checkout_record_fqdn" {
   value       = aws_route53_record.checkout_microfrontend.fqdn
   description = "FQDN for checkout frontend microfrontend"

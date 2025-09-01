@@ -9,7 +9,7 @@ resource "aws_db_instance" "mallhive_users" {
   instance_class          = "db.t4g.micro"
   allocated_storage       = 20
   db_subnet_group_name    = var.db_subnet_group_name
-  vpc_security_group_ids  = var.vpc_security_group_ids
+  #vpc_security_group_ids  = var.vpc_security_group_ids
   username                = "mallhive-admin"
   password                = var.users_password
   db_name                 = "mallhive-users"
@@ -29,7 +29,7 @@ resource "aws_db_instance" "mallhive_product" {
   instance_class          = "db.t4g.micro"
   allocated_storage       = 20
   db_subnet_group_name    = var.db_subnet_group_name
-  vpc_security_group_ids  = var.vpc_security_group_ids
+  #vpc_security_group_ids  = var.vpc_security_group_ids
   username                = "mallhive-admin"
   password                = var.users_password
   db_name                 = "mallhive-product"
@@ -49,7 +49,7 @@ resource "aws_db_instance" "mallhive_order" {
   instance_class          = "db.t4g.micro"
   allocated_storage       = 20
   db_subnet_group_name    = var.db_subnet_group_name
-  vpc_security_group_ids  = var.vpc_security_group_ids
+  #vpc_security_group_ids  = var.vpc_security_group_ids
   username                = "mallhive-admin"
   password                = var.users_password
   db_name                 = "mallhive-order"

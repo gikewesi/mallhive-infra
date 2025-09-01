@@ -19,7 +19,7 @@ resource "aws_iam_role" "ecr_access" {
 
 resource "aws_iam_policy" "ecr_pull_policy" {
   name        = "${var.repository_name}-ecr-pull-policy"
-  description = "Allows pulling images from ECR repo"
+  description = "Allows pulling images from ECR repos"
 
   policy = jsonencode({
     Version = "2012-10-17",
@@ -31,7 +31,15 @@ resource "aws_iam_policy" "ecr_pull_policy" {
           "ecr:BatchGetImage",
           "ecr:BatchCheckLayerAvailability"
         ],
-        Resource = aws_ecr_repository.this.arn
+        Resource = [
+          aws_ecr_repository.user_service.arn,
+          aws_ecr_repository.order_service.arn,
+          aws_ecr_repository.payment_service.arn,
+          aws_ecr_repository.cart_service.arn,
+          aws_ecr_repository.product_service.arn,
+          aws_ecr_repository.recommendations_service.arn,
+          aws_ecr_repository.analytics_service.arn
+        ]
       },
       {
         Effect   = "Allow",
@@ -41,6 +49,7 @@ resource "aws_iam_policy" "ecr_pull_policy" {
     ]
   })
 }
+
 
 resource "aws_iam_role_policy_attachment" "attach_ecr_pull_policy" {
   role       = aws_iam_role.ecr_access.name

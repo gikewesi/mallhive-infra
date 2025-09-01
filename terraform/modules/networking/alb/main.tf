@@ -1,4 +1,3 @@
-/*
 resource "aws_lb" "private_alb" {
   name               = "mallhive-api-alb"
   internal           = true
@@ -11,6 +10,7 @@ resource "aws_lb" "private_alb" {
     Name = "mallhive-api-alb"
   }
 }
+
 resource "aws_lb_target_group" "user" {
   name        = "tg-user"
   port        = 80
@@ -149,10 +149,10 @@ resource "aws_lb_target_group" "notification" {
 
 resource "aws_lb_listener" "https" {
   load_balancer_arn = aws_lb.private_alb.arn
-  port              = 443
+  port              = "443"
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
-  certificate_arn   = var.alb_acm_certificate_arn # ACM cert in ALB's region
+  certificate_arn   = var.alb_acm_certificate_arn
 
   default_action {
     type = "fixed-response"
@@ -163,7 +163,6 @@ resource "aws_lb_listener" "https" {
     }
   }
 }
-
 
 resource "aws_lb_listener_rule" "user" {
   listener_arn = aws_lb_listener.https.arn
@@ -277,7 +276,6 @@ resource "aws_lb_listener_rule" "analytics" {
   }
 }
 
-
 resource "aws_lb_listener_rule" "notification" {
   listener_arn = aws_lb_listener.https.arn
   priority     = 80
@@ -293,4 +291,4 @@ resource "aws_lb_listener_rule" "notification" {
     }
   }
 }
-*/
+
