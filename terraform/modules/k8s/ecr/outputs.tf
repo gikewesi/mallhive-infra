@@ -33,7 +33,3 @@ output "ecr_analytics_service_url" {
   value       = aws_ecr_repository.analytics_service.repository_url
 }
 
-output "ecr_task_execution_role_arn" {
-  description = "IAM Role ARN for ECS tasks to pull images from ECR"
-  value       = aws_iam_role.ecr_access.arn
-}

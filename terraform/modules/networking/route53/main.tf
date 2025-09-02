@@ -1,7 +1,3 @@
-provider "aws" {
-  region = "us-east-1"
-}
-
 data "aws_route53_zone" "frontend" {
   name         = "mallhive.com"
   private_zone = false

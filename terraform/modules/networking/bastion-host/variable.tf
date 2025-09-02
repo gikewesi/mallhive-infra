@@ -30,9 +30,12 @@ variable "allowed_ssh_cidr_blocks" {
   default     = ["0.0.0.0/0"]
 }
 
-variable "ami_id" {
-  description = "AMI ID for the bastion host instance"
+variable "bastion_sg_id" {
+  description = "The security group ID to attach to the bastion host"
   type        = string
-  default     = ""
-  # You can pass latest Amazon Linux 2 AMI ID here or look it up outside the module
+}
+
+variable "bastion_instance_profile" {
+  description = "The IAM instance profile name to attach to the bastion host"
+  type        = string
 }

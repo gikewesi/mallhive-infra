@@ -222,10 +222,6 @@ output "bastion_1b_public_ip" {
   value       = module.bastion.bastion_1b_public_ip
 }
 
-output "bastion_sg_id" {
-  description = "Security group ID attached to bastion hosts"
-  value       = module.bastion.bastion_sg_id
-}
 
 output "eks_cluster_name" {
   value = module.eks.eks_cluster_name
@@ -243,9 +239,6 @@ output "eks_cluster_arn" {
   value = module.eks.eks_cluster_arn
 }
 
-output "fargate_pod_execution_role_arn" {
-  value = module.eks.fargate_pod_execution_role_arn
-}
 
 output "kubeconfig_path" {
   value = module.eks.kubeconfig_path
@@ -278,11 +271,6 @@ output "ecr_recommendations_service_url" {
 output "ecr_analytics_service_url" {
   value = module.ecr.ecr_analytics_service_url
 }
-
-output "ecr_task_execution_role_arn" {
-  value = module.ecr.ecr_task_execution_role_arn
-}
-
 
 #bastion_sg
 output "bastion_sg_id" {
@@ -323,12 +311,72 @@ output "cache_sg_id" {
   value       = module.cache_sg.cache_sg_id
 }
 #vpc_sg
-output "vpc_endpoints_sg_id" {
+output "vpc_sg_id" {
   description = "Security Group ID for VPC interface endpoints"
   value       = module.vpc_sg.vpc_sg_id
 }
 
-output "vpc_endpoints_sg_arn" {
+output "vpc_sg_arn" {
   description = "Security Group ARN for VPC interface endpoints"
   value       = module.vpc_sg.vpc_sg_arn
+}
+
+output "bastion_role_name" {
+  value       = module.bastion_role.bastion_role_name
+  description = "IAM role name for bastion"
+}
+output "bastion_role_arn" {
+  value = module.bastion_role.bastion_role_arn
+}
+
+output "bastion_instance_profile_name" {
+  description = "The IAM instance profile name for the bastion host"
+  value       = module.bastion_role.bastion_instance_profile_name
+}
+
+
+output "cache_role_arn" {
+  value = module.cache_role.cache_role_arn
+}
+output "cache_role_name" {
+  value = module.cache_role.cache_role_name
+}
+output "db_role_arn" {
+  value = module.db_role.db_role_arn
+}
+output "db_role_name" {
+  value = module.db_role.db_role_name
+}
+
+output "eks_role_arn" {
+  value = module.eks_role.eks_role_arn
+}
+output "eks_role_name" {
+  value = module.eks_role.eks_role_name
+}
+
+output "serverless_role_name" {
+  value       = module.serverless_role.serverless_role_name
+  description = "The IAM role name for Serverless services"
+}
+
+output "serverless_role_arn" {
+  value       = module.serverless_role.serverless_role_arn
+  description = "The IAM role ARN for Serverless services"
+}
+output "ecr_role_name" {
+  value       = module.ecr_role.ecr_role_name
+  description = "The IAM role name for pushing to ECR"
+}
+
+output "ecr_role_arn" {
+  value       = module.ecr_role.ecr_role_arn
+  description = "The IAM role ARN for pushing to ECR"
+}
+
+output "fargate_pod_execution_role_arn" {
+  value = module.eks_role.fargate_pod_execution_role_arn
+}
+output "fargate_pod_execution_role_name" {
+  value = module.eks_role.fargate_pod_execution_role_name
 }

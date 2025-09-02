@@ -1,4 +1,4 @@
-variable "vpc_security_group_ids" {
+variable "vpc_sg_id" {
   description = "Security groups to attach to the RDS instance"
   type        = list(string)
 }
@@ -12,3 +12,5 @@ variable "users_password" {
 variable "db_subnet_group_name" {
   type = string
 }
+
+variable "db_role_arn" {}

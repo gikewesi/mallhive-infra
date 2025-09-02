@@ -1,7 +1,3 @@
-provider "aws" {
-  region = "us-east-1"
-}
-
 resource "aws_db_instance" "mallhive_users" {
   identifier              = "mallhive-users-db"
   engine                  = "postgres"
@@ -9,7 +5,7 @@ resource "aws_db_instance" "mallhive_users" {
   instance_class          = "db.t4g.micro"
   allocated_storage       = 20
   db_subnet_group_name    = var.db_subnet_group_name
-  #vpc_security_group_ids  = var.vpc_security_group_ids
+  vpc_security_group_ids  = var.vpc_sg_id
   username                = "mallhive-admin"
   password                = var.users_password
   db_name                 = "mallhive-users"
@@ -29,7 +25,7 @@ resource "aws_db_instance" "mallhive_product" {
   instance_class          = "db.t4g.micro"
   allocated_storage       = 20
   db_subnet_group_name    = var.db_subnet_group_name
-  #vpc_security_group_ids  = var.vpc_security_group_ids
+  vpc_security_group_ids  = var.vpc_sg_id
   username                = "mallhive-admin"
   password                = var.users_password
   db_name                 = "mallhive-product"
@@ -49,7 +45,7 @@ resource "aws_db_instance" "mallhive_order" {
   instance_class          = "db.t4g.micro"
   allocated_storage       = 20
   db_subnet_group_name    = var.db_subnet_group_name
-  #vpc_security_group_ids  = var.vpc_security_group_ids
+  vpc_security_group_ids  = var.vpc_sg_id
   username                = "mallhive-admin"
   password                = var.users_password
   db_name                 = "mallhive-order"
@@ -60,4 +56,20 @@ resource "aws_db_instance" "mallhive_order" {
   tags = {
     Name = "mallhive-order-db"
   }
+}
+
+resource "aws_db_instance_role_association" "rds_role_attachment" {
+  db_instance_identifier = aws_db_instance.mallhive_product.id
+  feature_name           = "IAMDatabaseAuthentication"
+  role_arn               = var.db_role_arn
+}
+resource "aws_db_instance_role_association" "rds_role_attachment2" {
+  db_instance_identifier = aws_db_instance.mallhive_users.id
+  feature_name           = "IAMDatabaseAuthentication"
+  role_arn               = var.db_role_arn
+}
+resource "aws_db_instance_role_association" "rds_role_attachment3" {
+  db_instance_identifier = aws_db_instance.mallhive_order.id
+  feature_name           = "IAMDatabaseAuthentication"
+  role_arn               = var.db_role_arn
 }

@@ -17,10 +17,6 @@ output "eks_cluster_arn" {
   description = "ARN of the EKS cluster"
   value       = aws_eks_cluster.cluster.arn
 }
-output "fargate_pod_execution_role_arn" {
-  description = "ARN of the IAM role used by Fargate pods"
-  value       = aws_iam_role.fargate_pod_execution.arn
-}
 
 output "kubeconfig_path" {
   description = "Path to generated kubeconfig file"

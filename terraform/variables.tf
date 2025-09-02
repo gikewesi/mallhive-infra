@@ -50,12 +50,6 @@ variable "security_group_ids" {
   type        = list(string)
 }
 */
-
-variable "ami_id" {
-  description = "AMI ID for the bastion host instance"
-  type        = string
-}
-
 variable "instance_type" {
   description = "EC2 instance type for bastion hosts"
   type        = string
@@ -94,4 +88,23 @@ variable "security_group_ids" {
 variable "allowed_ip" {
   description = "Your office or VPN IP in CIDR notation"
   type        = string
+}
+variable "role_name" {
+  description = "Name for the bastion IAM role"
+  type        = string
+  default     = "bastion-role"
+}
+
+variable "s3_bucket" {
+  description = "S3 bucket that bastion needs access to"
+  type        = string
+}
+
+variable "tags" {
+  description = "Tags to apply to resources"
+  type        = map(string)
+  default     = {
+    Project = "Mallhive"
+    Service = "Bastion"
+  }
 }

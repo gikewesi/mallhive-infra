@@ -18,12 +18,12 @@ provider "aws" {
 }
 
 module "vpc" {
-  source = "./modules/vpc"
+  source = "./modules/networking/vpc"
   vpc_cidr = var.vpc_cidr
 }
 
 module "subnets" {
-  source = "./modules/subnets"
+  source = "./modules/networking/subnets"
 
   vpc_id                          = module.vpc.vpc_id
   mallhive_public_1a_cidr_block   = var.mallhive_public_1a_cidr_block
@@ -37,7 +37,7 @@ module "subnets" {
 }
 
 module "route_tables" {
-  source = "./modules/route-tables"
+  source = "./modules/networking/route-tables"
 
   vpc_id                = module.vpc.vpc_id
   public_subnet_1a_id   = module.subnets.public_subnet_1a_id
@@ -49,29 +49,31 @@ module "route_tables" {
 }
 
 module "s3" {
-  source = "./modules/s3"
+  source = "./modules/database/s3"
 }
 
 module "ecr" {
-  source          = "./modules/ecr"
+  source          = "./modules/k8s/ecr"
   repository_name = var.repository_name
 }
 
 module "rds" {
-  source = "./modules/rds"
+  source = "./modules/database/rds"
 
   db_subnet_group_name   = module.subnets.db_subnet_group_name
-  vpc_security_group_ids = []
+  vpc_sg_id              = module.db_sg.db_sg_id
+  db_role_arn            = module.db_role.db_role_arn
+
   users_password         = var.users_password
 }
 
 module "acm" {
-  source            = "./modules/acm"
+  source            = "./modules/networking/acm"
   public_zone_id    = module.dns.public_zone_id
 }
 
 module "cloudfront" {
-  source                 = "./modules/cloudfront"
+  source                 = "./modules/networking/cloudfront"
   bucket_name            = "mallhive-s3"
   bucket_arn             = module.s3.bucket_arn
   bucket_domain_name     = module.s3.bucket_domain_name
@@ -80,17 +82,17 @@ module "cloudfront" {
 }
 
 module "alb" {
-  source                    = "./modules/alb"
+  source                    = "./modules/networking/alb"
   vpc_id                   = module.vpc.vpc_id
   private_subnet_1a_id     = module.subnets.private_subnet_1a_id
   private_subnet_1b_id     = module.subnets.private_subnet_1b_id
-  security_group_ids       = var.security_group_ids
+  security_group_ids       = module.alb_sg.alb_sg_id
   alb_acm_certificate_arn  = module.acm.certificate_arn
   private_zone_id          = module.dns.private_zone_id
 }
 
 module "dns" {
-  source = "./modules/route53"
+  source = "./modules/networking/route53"
 
   cloudfront_domain_name        = module.cloudfront.cloudfront_domain_name           
   cloudfront_zone_id            = module.cloudfront.cloudfront_zone_id       
@@ -100,23 +102,26 @@ module "dns" {
 }
 
 module "bastion" {
-  source = "./modules/bastion-host"
+  source = "./modules/networking/bastion-host"
 
-  vpc_id              = module.vpc.vpc_id
-  public_subnet_1a_id = module.subnets.public_subnet_1a_id
-  public_subnet_1b_id = module.subnets.public_subnet_1b_id
-  ami_id              = var.ami_id
-  instance_type       = var.instance_type
-  key_name            = var.key_name
-  allowed_ssh_cidr_blocks = var.allowed_ssh_cidr_blocks
+  vpc_id                   = module.vpc.vpc_id
+  public_subnet_1a_id      = module.subnets.public_subnet_1a_id
+  public_subnet_1b_id      = module.subnets.public_subnet_1b_id
+  bastion_sg_id            = module.bastion_sg.bastion_sg_id
+  bastion_instance_profile = module.bastion_role.bastion_instance_profile_name
 }
 
 module "eks" {
-  source = "./modules/eks"
+  source = "./modules/k8s/eks"
 
   private_subnet_1a_id = module.subnets.private_subnet_1a_id
   private_subnet_1b_id = module.subnets.private_subnet_1b_id
+  eks_sg_id            = module.eks_sg.eks_sg_id
+  eks_role_arn = module.eks_role.eks_role_arn
+  fargate_pod_execution_role_arn = module.eks_role.fargate_pod_execution_role_arn
+
 }
+
 
 #security groups
 module "bastion_sg" {
@@ -158,3 +163,27 @@ module "vpc_sg" {
   vpc_id     = module.vpc.vpc_id
   eks_sg_id  = module.eks_sg.eks_sg_id
 }
+
+
+module "bastion_role" {
+  source    = "./modules/security/IAM/bastion"
+}
+
+module "cache_role" {
+  source  = "./modules/security/IAM/cache"
+}
+
+module "db_role" {
+  source      = "./modules/security/IAM/database"
+}
+
+
+module "eks_role" {
+  source = "./modules/security/IAM/eks"
+}
+module "serverless_role" {
+  source = "./modules/security/IAM/serverless"
+}
+module "ecr_role" {
+  source = "./modules/security/IAM/ecr"
+  }
