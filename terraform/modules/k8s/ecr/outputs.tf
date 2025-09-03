@@ -33,3 +33,7 @@ output "ecr_analytics_service_url" {
   value       = aws_ecr_repository.analytics_service.repository_url
 }
 
+output "ecr_notification_service_url" {
+  description = "URL of the ECR repository for notification-service"
+  value       = aws_ecr_repository.notification_service.repository_url
+}

@@ -1,5 +1,20 @@
+# Public zone
+resource "aws_route53_zone" "frontend" {
+  name = "mallhive.com"
+}
+
+# Private zone
+resource "aws_route53_zone" "backend" {
+  name = "internal.mallhive.com"
+
+  vpc {
+    vpc_id = var.vpc_id
+  }
+}
+
+
 data "aws_route53_zone" "frontend" {
-  name         = "mallhive.com"
+  name         = "mallhive.com."
   private_zone = false
 }
 
@@ -63,7 +78,7 @@ resource "aws_route53_record" "homepage_microfrontend" {
   }
 }
 data "aws_route53_zone" "backend" {
-  name         = "internal.mallhive.com"
+  name         = "internal.mallhive.com."
   private_zone = true
 }
 

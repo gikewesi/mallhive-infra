@@ -61,7 +61,7 @@ module "rds" {
   source = "./modules/database/rds"
 
   db_subnet_group_name   = module.subnets.db_subnet_group_name
-  vpc_sg_id              = module.db_sg.db_sg_id
+  vpc_sg_id              = [module.db_sg.db_sg_id]
   db_role_arn            = module.db_role.db_role_arn
 
   users_password         = var.users_password
@@ -86,13 +86,14 @@ module "alb" {
   vpc_id                   = module.vpc.vpc_id
   private_subnet_1a_id     = module.subnets.private_subnet_1a_id
   private_subnet_1b_id     = module.subnets.private_subnet_1b_id
-  security_group_ids       = module.alb_sg.alb_sg_id
+  security_group_ids       = [module.alb_sg.alb_sg_id]
   alb_acm_certificate_arn  = module.acm.certificate_arn
   private_zone_id          = module.dns.private_zone_id
 }
 
 module "dns" {
   source = "./modules/networking/route53"
+  vpc_id                          = module.vpc.vpc_id
 
   cloudfront_domain_name        = module.cloudfront.cloudfront_domain_name           
   cloudfront_zone_id            = module.cloudfront.cloudfront_zone_id       
@@ -134,9 +135,7 @@ module "db_sg" {
 
   vpc_id = module.vpc.vpc_id
 
-  trusted_sg_ids = [
-    module.eks_sg.eks_sg_id 
-  ]
+  trusted_sg_ids = module.eks_sg.eks_sg_id 
 
 }
 module "eks_sg" {

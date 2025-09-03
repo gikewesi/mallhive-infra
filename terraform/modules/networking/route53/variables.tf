@@ -17,3 +17,7 @@ variable "backend_internal_alb_zone_id" {
   description = "Hosted zone ID of the internal ALB"
   type        = string
 }
+variable "vpc_id" {
+  description = "VPC ID"
+  type        = string
+}

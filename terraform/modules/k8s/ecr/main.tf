@@ -89,3 +89,16 @@ resource "aws_ecr_repository" "analytics_service" {
     Terraform   = "true"
   }
 }
+
+resource "aws_ecr_repository" "notification_service" {
+  name = "${var.repository_name}-notification-service"
+
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+
+  tags = {
+    Environment = "production"
+    Terraform   = "true"
+  }
+}

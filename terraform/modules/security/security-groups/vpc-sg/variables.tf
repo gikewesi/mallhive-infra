@@ -5,6 +5,6 @@ variable "vpc_id" {
 
 variable "eks_sg_id" {
   description = "List of Security Group IDs for EKS (Fargate or Node Groups) allowed to access VPC endpoints"
-  type        = list(string)
+  type        = string
 }
 

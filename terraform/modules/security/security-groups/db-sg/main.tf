@@ -19,12 +19,11 @@ resource "aws_security_group" "db_sg" {
 
 #  inbound rules (Postgres: 5432)
 resource "aws_security_group_rule" "db_ingress" {
-  for_each                 = toset(var.trusted_sg_ids)
   type                     = "ingress"
   from_port                = 5432
   to_port                  = 5432
   protocol                 = "tcp"
-  source_security_group_id = each.value
+  source_security_group_id = var.trusted_sg_ids
   security_group_id        = aws_security_group.db_sg.id
 }
 

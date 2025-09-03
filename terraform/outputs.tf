@@ -272,6 +272,9 @@ output "ecr_analytics_service_url" {
   value = module.ecr.ecr_analytics_service_url
 }
 
+output "ecr_notification_service_url" {
+  value = module.ecr.ecr_notification_service_url
+}
 #bastion_sg
 output "bastion_sg_id" {
   description = "The ID of the bastion SG"
